@@ -29,7 +29,9 @@ namespace DisposableFileSystemTest
         [Fact]
         public void should_create_directories_in_the_system_temp_directory()
         {
-            var parent = Path.GetDirectoryName(_sut.Path);
+            var directory = _sut.Path;
+
+            var parent = Path.GetDirectoryName(directory);
 
             parent.Should().Be(Path.GetDirectoryName(Path.GetTempPath()));
         }
