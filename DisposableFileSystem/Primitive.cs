@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 namespace DisposableFileSystem
 {
@@ -25,6 +26,15 @@ namespace DisposableFileSystem
         private void RecursivelyDelete()
         {
             Directory.Delete(Path, true);
+        }
+
+        public string CreateDirectory(params string[] directories)
+        {
+            var enumerable = directories.ToList().Prepend(Path).ToArray();
+            var directory = System.IO.Path.Combine(enumerable);
+            Directory.CreateDirectory(directory);
+
+            return directory;
         }
     }
 }
