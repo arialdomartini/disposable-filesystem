@@ -14,7 +14,7 @@ namespace DisposableFileSystem
 
         private string GetRandomPath() =>
             System.IO.Path.Combine(
-                System.IO.Path.GetTempPath(), 
+                System.IO.Path.GetTempPath(),
                 System.IO.Path.GetRandomFileName());
 
         public string Path { get; }

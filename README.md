@@ -1,10 +1,9 @@
 Disposable FileSystem
 =====================
-A C# library to help creating temporary files and directories in tests projects
+DisposableFileSystem is a C# library that helps the creation of temporary files and directories in tests projects, ensuring that any content is cleaned up when the tests end.
 
-# Installation
-The library is available as a [NuGet package](https://www.nuget.org/packages/DisposableFileSystem/), which can be installed from the command line with:
-
+## Installation
+The library is available as a [NuGet package](https://www.nuget.org/packages/DisposableFileSystem/), and it can be installed from the command line with:
 
 ```bash
 dotnet add package DisposableFileSystem
@@ -17,9 +16,8 @@ Install-Package DisposableFileSystem
 
 in the Package Manager console.
 
-
-# Usage
-## Create a temporary, disposable directory
+## Usage
+### Create a temporary, disposable directory
 
 The following creates a temporary directory, located in [current user's temporary folder](https://docs.microsoft.com/en-us/dotnet/api/system.io.path.gettemppath?view=netframework-4.7.2):
 
@@ -27,7 +25,7 @@ The following creates a temporary directory, located in [current user's temporar
 var directory = new DisposableDirectory();
 ```
 
-The directory and all its content can be recursively deleted invoking `Dispose()`, therefore a common pattern is using a disposable directory with a `using` statement:
+Since the directory and all its content can be recursively deleted invoking `Dispose()`, a common pattern is the use in combination of a `using` statement:
 
 ```csharp
 using(var directory = new DisposableDirectory())
@@ -37,10 +35,11 @@ using(var directory = new DisposableDirectory())
     // operate with the disposable directory
 }
 ```
+
 The `Path` property returns the full path of the disposable directory.
 
 ## Create subdirectories
-Use the method `CreateDirectory()` to create a subdirectory inside the temporary directory:
+The method `CreateDirectory()` can be used to conveniently create a sub-directory inside the temporary root directory, without having to deal with `System.IO.Path.Combine`:
 
 ```csharp
 using(var directory = new DisposableDirectory())
@@ -49,9 +48,10 @@ using(var directory = new DisposableDirectory())
 }
 ```
 
-The subdirectory and its content will be deleted when `Dispose()` is invoked on the root directory.
+The sub-directory and its content will be deleted on `Dispose()`.
 
-It's possible to provide a list of directory names to create nested directories. For example, to create the following structure:
+It's possible to create nested sub-directories by providing a list of their names. <br />
+For example, to create the following structure:
 
 ```bash
 disp
@@ -69,18 +69,18 @@ using(var directory = new DisposableDirectory())
 }
 ```
 
-All the directories and their content will be recursively deleted at the disposable directory `Dispose()`.
+In this case as well, all the directories and their content will be recursively deleted an `Dispose()`.
 
 
-# Building from source code
-## Build
+## Building from source code
+### Build
 Run:
 
 ```
 dotnet build
 ```
 
-## Run tests
+### Run tests
 Run:
 
 ```bash
