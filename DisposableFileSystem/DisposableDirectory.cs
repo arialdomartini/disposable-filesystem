@@ -6,27 +6,28 @@ namespace DisposableFileSystem
 {
     public class DisposableDirectory : IDisposable
     {
-        private DisposableDirectory()
+        public string Path { get; }
+
+        private DisposableDirectory(string path)
         {
-            Path = GetRandomPath();
-            Directory.CreateDirectory(Path);
+            Path = path;
         }
 
-        private string GetRandomPath() =>
+        public static DisposableDirectory Create() =>
+            new DisposableDirectory(RandomPath().EnsureExists());
+
+        private static string RandomPath() =>
             System.IO.Path.Combine(
                 System.IO.Path.GetTempPath(),
                 System.IO.Path.GetRandomFileName());
 
-        public string Path { get; }
         public void Dispose()
         {
             RecursivelyDelete();
         }
 
-        private void RecursivelyDelete()
-        {
+        private void RecursivelyDelete() =>
             Directory.Delete(Path, true);
-        }
 
         public string CreateDirectory(params string[] directories)
         {
@@ -36,8 +37,5 @@ namespace DisposableFileSystem
 
             return directory;
         }
-
-        public static DisposableDirectory Create() =>
-            new DisposableDirectory();
     }
 }

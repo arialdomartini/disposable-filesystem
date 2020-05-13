@@ -35,7 +35,7 @@ namespace DisposableFileSystemTest
 
             parent.Should().Be(Path.GetDirectoryName(Path.GetTempPath()));
         }
-        
+
         [Fact]
         public void should_delete_the_directory_and_its_content_when_disposing_of_it()
         {
@@ -46,6 +46,7 @@ namespace DisposableFileSystemTest
                 File.WriteAllText(filePath, "some text");
                 File.Exists(filePath).Should().Be(true);
             }
+
             File.Exists(filePath).Should().Be(false);
         }
 

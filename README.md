@@ -22,13 +22,13 @@ in the Package Manager console.
 The following creates a temporary directory, located in [current user's temporary folder](https://docs.microsoft.com/en-us/dotnet/api/system.io.path.gettemppath?view=netframework-4.7.2):
 
 ```csharp
-var directory = new DisposableDirectory();
+var directory = DisposableDirectory.Create();
 ```
 
 Since the directory and all its content can be recursively deleted invoking `Dispose()`, a common pattern is the use in combination of a `using` statement:
 
 ```csharp
-using(var directory = new DisposableDirectory())
+using(var directory = DisposableDirectory.Create())
 {
     var fullPath = directory.Path;
     
