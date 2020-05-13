@@ -76,6 +76,40 @@ namespace DisposableFileSystemTest
             dir3.Name.Should().Be("dir3");
         }
 
+        [Fact]
+        public void should_allow_the_creation_of_files()
+        {
+            var fileName = _sut.RandomFileName();
+
+            File.WriteAllText(fileName, "some text");
+
+            File.ReadAllText(fileName).Should().Be("some text");
+        }
+
+        [Fact]
+        public void created_files_are_deleted_during_disposal()
+        {
+            string fileName;
+            using (var directory = DisposableDirectory.Create())
+            {
+                fileName = directory.RandomFileName();
+                File.WriteAllText(fileName, "some text");
+
+                File.Exists(fileName).Should().Be(true);
+            }
+
+            File.Exists(fileName).Should().Be(false);
+        }
+
+        [Fact]
+        public void file_names_are_random()
+        {
+            var fileName1 = _sut.RandomFileName();
+            var fileName2 = _sut.RandomFileName();
+
+            fileName1.Should().NotBe(fileName2);
+        }
+
         public void Dispose()
         {
             _sut.Dispose();

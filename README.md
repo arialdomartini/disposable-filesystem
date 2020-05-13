@@ -42,7 +42,7 @@ The `Path` property returns the full path of the disposable directory.
 The method `CreateDirectory()` can be used to conveniently create a sub-directory inside the temporary root directory, without having to deal with `System.IO.Path.Combine`:
 
 ```csharp
-using(var directory = new DisposableDirectory())
+using(var directory = DisposableDirectory.Create())
 {
     directory.CreateDirectory("sub-dir");
 }
@@ -63,13 +63,28 @@ disp
 the following can be used:
 
 ```csharp
-using(var directory = new DisposableDirectory())
+using(var directory = DisposableDirectory.Create())
 {
     directory.CreateDirectory("dir1", "dir2", "dir3");
 }
 ```
 
-In this case as well, all the directories and their content will be recursively deleted an `Dispose()`.
+In this case as well, all the directories and their content will be recursively deleted on `Dispose()`.
+
+
+
+## Create temporary files
+The method `RandomFileName()` generates a random name for a file contained in the root temporary directory:
+
+```csharp
+using (var directory = DisposableDirectory.Create())
+{
+    fileName = directory.RandomFileName();
+    File.WriteAllText(fileName, "some text");
+}
+```
+
+Files created like this will be delete on `Dispose()`.
 
 
 ## Building from source code

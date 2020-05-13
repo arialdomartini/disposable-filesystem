@@ -37,5 +37,10 @@ namespace DisposableFileSystem
 
             return directory;
         }
+
+        public string RandomFileName() =>
+            System.IO.Path.Combine(
+                Path,
+                System.IO.Path.GetRandomFileName());
     }
 }
