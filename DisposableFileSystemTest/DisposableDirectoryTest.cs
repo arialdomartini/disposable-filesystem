@@ -16,6 +16,11 @@ namespace DisposableFileSystemTest
             _sut = DisposableDirectory.Create();
         }
 
+        public void Dispose()
+        {
+            _sut.Dispose();
+        }
+
         [Fact]
         public void disposable_directories_have_random_names()
         {
@@ -110,9 +115,12 @@ namespace DisposableFileSystemTest
             fileName1.Should().NotBe(fileName2);
         }
 
-        public void Dispose()
+        [Fact]
+        public void calculates_paths_from_root()
         {
-            _sut.Dispose();
+            var path = _sut.Combine("one", "two", "three", "some-file.txt");
+
+            path.Should().Be(Path.Combine(_sut.Path, "one", "two", "three", "some-file.txt"));
         }
     }
 }

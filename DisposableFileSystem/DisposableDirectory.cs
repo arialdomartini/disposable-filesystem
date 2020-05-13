@@ -29,14 +29,11 @@ namespace DisposableFileSystem
         private void RecursivelyDelete() =>
             Directory.Delete(Path, true);
 
-        public string CreateDirectory(params string[] directories)
-        {
-            var enumerable = directories.ToList().Prepend(Path).ToArray();
-            var directory = System.IO.Path.Combine(enumerable);
-            Directory.CreateDirectory(directory);
+        public string CreateDirectory(params string[] directories) =>
+            Directory.CreateDirectory(Combine(directories)).FullName;
 
-            return directory;
-        }
+        public string Combine(params string[] directories) =>
+            System.IO.Path.Combine(directories.Prepend(Path).ToArray());
 
         public string RandomFileName() =>
             System.IO.Path.Combine(

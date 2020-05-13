@@ -86,6 +86,17 @@ using (var directory = DisposableDirectory.Create())
 
 Files created like this will be delete on `Dispose()`.
 
+## Path.Combine
+```csharp
+directory.Combine("some", "path");
+```
+
+is the short for:
+
+```csharp
+Path.Combine(directory.Path, "some", "path");
+```
+
 
 ## Building from source code
 ### Build
