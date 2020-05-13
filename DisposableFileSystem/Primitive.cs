@@ -6,7 +6,7 @@ namespace DisposableFileSystem
 {
     public class DisposableDirectory : IDisposable
     {
-        public DisposableDirectory()
+        private DisposableDirectory()
         {
             Path = GetRandomPath();
             Directory.CreateDirectory(Path);
@@ -36,5 +36,8 @@ namespace DisposableFileSystem
 
             return directory;
         }
+
+        public static DisposableDirectory Create() =>
+            new DisposableDirectory();
     }
 }

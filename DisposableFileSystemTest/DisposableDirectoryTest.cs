@@ -13,14 +13,14 @@ namespace DisposableFileSystemTest
 
         public DisposableDirectoryTest()
         {
-            _sut = new DisposableDirectory();
+            _sut = DisposableDirectory.Create();
         }
 
         [Fact]
         public void should_create_random_directories()
         {
-            using (var directory1 = new DisposableDirectory())
-            using (var directory2 = new DisposableDirectory())
+            using (var directory1 = DisposableDirectory.Create())
+            using (var directory2 = DisposableDirectory.Create())
             {
                 directory1.Path.Should().NotBe(directory2.Path);
             }
@@ -40,7 +40,7 @@ namespace DisposableFileSystemTest
         public void should_delete_the_directory_and_its_content_when_disposing_of_it()
         {
             string filePath;
-            using (var sut = new DisposableDirectory())
+            using (var sut = DisposableDirectory.Create())
             {
                 filePath = Path.Combine(sut.Path, "some-file.txt");
                 File.WriteAllText(filePath, "some text");
