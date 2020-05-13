@@ -17,7 +17,7 @@ namespace DisposableFileSystemTest
         }
 
         [Fact]
-        public void should_create_random_directories()
+        public void disposable_directories_have_random_names()
         {
             using (var directory1 = DisposableDirectory.Create())
             using (var directory2 = DisposableDirectory.Create())
@@ -27,7 +27,7 @@ namespace DisposableFileSystemTest
         }
 
         [Fact]
-        public void should_create_directories_in_the_system_temp_directory()
+        public void directories_are_created_in_the_system_temp_directory()
         {
             var directory = _sut.Path;
 
@@ -37,7 +37,7 @@ namespace DisposableFileSystemTest
         }
 
         [Fact]
-        public void should_delete_the_directory_and_its_content_when_disposing_of_it()
+        public void when_disposed_of_the_directory_and_its_content_are_deleted()
         {
             string filePath;
             using (var sut = DisposableDirectory.Create())
@@ -51,7 +51,7 @@ namespace DisposableFileSystemTest
         }
 
         [Fact]
-        public void should_allow_the_creation_of_subdirectories()
+        public void allows_the_creation_of_subdirectories()
         {
             var result = _sut.CreateDirectory("some_directory");
 
@@ -61,7 +61,7 @@ namespace DisposableFileSystemTest
 
         [Fact]
         [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
-        public void should_allow_the_creation_of_nested_subdirectories()
+        public void allows_the_creation_of_nested_subdirectories_providing_a_collection_of_directory_names()
         {
             var result = _sut.CreateDirectory("dir1", "dir2", "dir3");
 
@@ -77,7 +77,7 @@ namespace DisposableFileSystemTest
         }
 
         [Fact]
-        public void should_allow_the_creation_of_files()
+        public void allows_the_creation_of_files()
         {
             var fileName = _sut.RandomFileName();
 
