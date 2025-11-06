@@ -14,36 +14,19 @@ namespace DisposableFileSystem
             Path = path;
         }
 
+        private static string RandomPath() =>
+            GetRandomFileName();
+
         public static DisposableDirectory Create()
         {
             var currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
-            var randomPath = System.IO.Path.Combine(currentDirectory, RandomPath());
+            var randomPath =
+                System.IO.Path.Combine(currentDirectory, RandomPath())
+                    .EnsureExists();
 
-            return new DisposableDirectory(randomPath.EnsureExists());
+            return new DisposableDirectory(randomPath);
         }
-
-        private static string RandomPath() =>
-                GetRandomFileName();
-
-        void IDisposable.Dispose()
-        {
-            RecursivelyDelete();
-        }
-
-        private void RecursivelyDelete() =>
-            Directory.Delete(Path, true);
-
-        public string CreateDirectory(params string[] directories) =>
-            Directory.CreateDirectory(Combine(directories)).FullName;
-
-        public string Combine(params string[] directories) =>
-            System.IO.Path.Combine(directories.Prepend(Path).ToArray());
-
-        public string RandomFileName() =>
-            System.IO.Path.Combine(
-                Path,
-                GetRandomFileName());
 
         public static void InADisposable(Action<DisposableDirectory> action)
         {
@@ -51,6 +34,25 @@ namespace DisposableFileSystem
             {
                 action(disposableDirectory);
             }
+        }
+
+        public string CreateDirectory(params string[] directories) =>
+            Directory.CreateDirectory(Combine(directories)).FullName;
+
+        public string RandomFileName() =>
+            System.IO.Path.Combine(
+                Path,
+                GetRandomFileName());
+
+        public string Combine(params string[] directories) =>
+            System.IO.Path.Combine(directories.Prepend(Path).ToArray());
+
+        private void RecursivelyDelete() =>
+            Directory.Delete(Path, true);
+
+        void IDisposable.Dispose()
+        {
+            RecursivelyDelete();
         }
     }
 }
