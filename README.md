@@ -1,6 +1,9 @@
 Disposable FileSystem
 =====================
-DisposableFileSystem is a C# library that helps the creation of temporary files and directories in tests projects, ensuring that any content is cleaned up when the tests end.
+DisposableFileSystem is a C# library that deletes test leftovers so
+you don't have to. It helps in the creation of temporary files and
+directories in tests projects, ensuring that any content is cleaned up
+when the tests end.
 
 ## Installation
 The library is available as a [NuGet package](https://www.nuget.org/packages/DisposableFileSystem/), and it can be installed from the command line with:

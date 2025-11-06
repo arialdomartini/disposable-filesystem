@@ -2,7 +2,7 @@
     
     <PropertyGroup>
         <PackageId>DisposableFileSystem</PackageId>
-        <Title>A library that ease the creation of temporary directory and files in test projects</Title>
+        <Title>Deletes test leftovers so you don't have to</Title>
         <Version>2.1.0</Version>
         <Authors>Arialdo Martini</Authors>
         <PackageProjectUrl>https://github.com/arialdomartini/disposable-filesystem</PackageProjectUrl>
