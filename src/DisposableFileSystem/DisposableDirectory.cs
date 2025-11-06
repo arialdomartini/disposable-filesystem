@@ -21,7 +21,7 @@ namespace DisposableFileSystem
                 System.IO.Path.GetTempPath(),
                 System.IO.Path.GetRandomFileName());
 
-        public void Dispose()
+        void IDisposable.Dispose()
         {
             RecursivelyDelete();
         }
