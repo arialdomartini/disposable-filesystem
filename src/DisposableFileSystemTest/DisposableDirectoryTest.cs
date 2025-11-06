@@ -1,20 +1,12 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using DisposableFileSystem;
 using Xunit;
 
 namespace DisposableFileSystemTest;
 
-public class DisposableDirectoryTest : IDisposable
+public class DisposableDirectoryTest
 {
-    private readonly DisposableDirectory _sut = DisposableDirectory.Create();
-
-    void IDisposable.Dispose()
-    {
-        _sut.Dispose();
-    }
-
     [Fact]
     public void disposable_directories_have_random_names()
     {
@@ -28,7 +20,8 @@ public class DisposableDirectoryTest : IDisposable
     [Fact]
     public void directories_are_created_in_the_system_temp_directory()
     {
-        var directory = _sut.Path;
+        using var disposableDirectory = DisposableDirectory.Create();
+        var directory = disposableDirectory.Path;
 
         var parent = Path.GetDirectoryName(directory);
 
@@ -39,9 +32,9 @@ public class DisposableDirectoryTest : IDisposable
     public void when_disposed_of_the_directory_and_its_content_are_deleted()
     {
         string filePath;
-        using (var sut = DisposableDirectory.Create())
+        using (var disposableDirectory = DisposableDirectory.Create())
         {
-            filePath = Path.Combine(sut.Path, "some-file.txt");
+            filePath = Path.Combine(disposableDirectory.Path, "some-file.txt");
             File.WriteAllText(filePath, "some text");
 
             Assert.True(File.Exists(filePath));
@@ -53,17 +46,21 @@ public class DisposableDirectoryTest : IDisposable
     [Fact]
     public void allows_the_creation_of_subdirectories()
     {
-        var result = _sut.CreateDirectory("some_directory");
+        using var disposableDirectory = DisposableDirectory.Create();
+
+        var result = disposableDirectory.CreateDirectory("some_directory");
 
         var parentDirectory = Directory.GetParent(result).FullName;
-        Assert.Equal(parentDirectory, _sut.Path);
+        Assert.Equal(parentDirectory, disposableDirectory.Path);
     }
 
     [Fact]
     [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
     public void allows_the_creation_of_nested_subdirectories_providing_a_collection_of_directory_names()
     {
-        var result = _sut.CreateDirectory("dir1", "dir2", "dir3");
+        using var disposableDirectory = DisposableDirectory.Create();
+
+        var result = disposableDirectory.CreateDirectory("dir1", "dir2", "dir3");
 
         var dir3 = new DirectoryInfo(result);
         var dir2 = dir3.Parent;
@@ -71,7 +68,7 @@ public class DisposableDirectoryTest : IDisposable
         var root = dir1.Parent;
 
 
-        Assert.Equal(_sut.Path, root.FullName);
+        Assert.Equal(disposableDirectory.Path, root.FullName);
         Assert.Equal("dir1", dir1.Name);
         Assert.Equal("dir2", dir2.Name);
         Assert.Equal("dir3", dir3.Name);
@@ -80,7 +77,9 @@ public class DisposableDirectoryTest : IDisposable
     [Fact]
     public void allows_the_creation_of_files()
     {
-        var fileName = _sut.RandomFileName();
+        using var disposableDirectory = DisposableDirectory.Create();
+
+        var fileName = disposableDirectory.RandomFileName();
 
         File.WriteAllText(fileName, "some text");
 
@@ -91,9 +90,9 @@ public class DisposableDirectoryTest : IDisposable
     public void created_files_are_deleted_during_disposal()
     {
         string fileName;
-        using (var directory = DisposableDirectory.Create())
+        using (var disposableDirectory = DisposableDirectory.Create())
         {
-            fileName = directory.RandomFileName();
+            fileName = disposableDirectory.RandomFileName();
             File.WriteAllText(fileName, "some text");
 
             Assert.True(File.Exists(fileName));
@@ -105,8 +104,10 @@ public class DisposableDirectoryTest : IDisposable
     [Fact]
     public void file_names_are_random()
     {
-        var fileName1 = _sut.RandomFileName();
-        var fileName2 = _sut.RandomFileName();
+        using var disposableDirectory = DisposableDirectory.Create();
+
+        var fileName1 = disposableDirectory.RandomFileName();
+        var fileName2 = disposableDirectory.RandomFileName();
 
         Assert.NotEqual(fileName1, fileName2);
     }
@@ -114,8 +115,10 @@ public class DisposableDirectoryTest : IDisposable
     [Fact]
     public void calculates_paths_from_root()
     {
-        var path = _sut.Combine("one", "two", "three", "some-file.txt");
+        using var disposableDirectory = DisposableDirectory.Create();
 
-        Assert.Equal(Path.Combine(_sut.Path, "one", "two", "three", "some-file.txt"), path);
+        var path = disposableDirectory.Combine("one", "two", "three", "some-file.txt");
+
+        Assert.Equal(Path.Combine(disposableDirectory.Path, "one", "two", "three", "some-file.txt"), path);
     }
 }
