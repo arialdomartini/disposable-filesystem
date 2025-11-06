@@ -1,5 +1,5 @@
-**/obj/**
-**/bin/**
+.build/
+.idea/
 .idea/
 DisposableFileSystem.sln.DotSettings.user
 
