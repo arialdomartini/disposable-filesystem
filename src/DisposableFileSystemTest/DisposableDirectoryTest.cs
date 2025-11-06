@@ -1,5 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
+using DisposableFileSystem;
 using Xunit;
 using static DisposableFileSystem.DisposableDirectory;
 
@@ -8,7 +10,7 @@ namespace DisposableFileSystemTest;
 public class DisposableDirectoryTest
 {
     [Fact]
-    public void disposable_directories_have_random_names()
+    public void disposable_directories_are_independent()
     {
         using var directory1 = Create();
         using var directory2 = Create();
@@ -20,11 +22,10 @@ public class DisposableDirectoryTest
     public void directories_are_created_in_the_system_temp_directory()
     {
         using var disposableDirectory = Create();
-        var directory = disposableDirectory.Path;
 
-        var parent = Path.GetDirectoryName(directory);
+        var systemTempDirectory = Path.GetTempPath();
 
-        Assert.Equal(Path.GetDirectoryName(Path.GetTempPath()), parent);
+        Assert.True(systemTempDirectory.Contains(disposableDirectory));
     }
 
     [Fact]
@@ -136,4 +137,14 @@ public class DisposableDirectoryTest
 
         Assert.False(File.Exists(fileName));
     }
+}
+
+internal static class FileSystemHelpers
+{
+    private static string[] InnerDirectories(this string path) => Directory.GetDirectories(path);
+
+    internal static bool Contains(this string container, DisposableDirectory disposableDirectory) =>
+        container
+            .InnerDirectories()
+            .Contains(disposableDirectory.Path);
 }
