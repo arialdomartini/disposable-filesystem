@@ -11,7 +11,7 @@ public class DisposableDirectoryTest : IDisposable
 {
     private readonly DisposableDirectory _sut = DisposableDirectory.Create();
 
-    public void Dispose()
+    void IDisposable.Dispose()
     {
         _sut.Dispose();
     }
