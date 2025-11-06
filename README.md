@@ -41,6 +41,38 @@ using(var directory = DisposableDirectory.Create())
 
 The `Path` property returns the full path of the disposable directory.
 
+### Functional syntax
+A convenient alternative is to write your test as a lambda expression, like in:
+
+```csharp
+using static DisposableFileSystem.DisposableDirectory;
+
+public class YourTest
+{
+    [Fact]
+    void functional_syntax()
+    {
+        InADisposable(directory =>
+        {
+            // your test
+        });
+    }
+}
+```
+
+or even shortly as:
+
+```csharp
+[Fact]
+void functional_syntax2() => InADisposable(directory =>
+{
+    // your test
+});
+```
+
+Notice the use of `using static
+DisposableFileSystem.DisposableDirectory;` to shorten the syntax.
+
 ## Create subdirectories
 The method `CreateDirectory()` can be used to conveniently create a sub-directory inside the temporary root directory, without having to deal with `System.IO.Path.Combine`:
 
