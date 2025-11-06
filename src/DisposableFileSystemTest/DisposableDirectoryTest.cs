@@ -49,7 +49,7 @@ public class DisposableDirectoryTest
 
         var result = disposableDirectory.CreateDirectory("some_directory");
 
-        var parentDirectory = Directory.GetParent(result).FullName;
+        var parentDirectory = Directory.GetParent(result)!.FullName;
         Assert.Equal(parentDirectory, disposableDirectory.Path);
     }
 
