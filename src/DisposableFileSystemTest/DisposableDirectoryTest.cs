@@ -10,11 +10,10 @@ public class DisposableDirectoryTest
     [Fact]
     public void disposable_directories_have_random_names()
     {
-        using (var directory1 = DisposableDirectory.Create())
-        using (var directory2 = DisposableDirectory.Create())
-        {
-            Assert.NotEqual(directory1.Path, directory2.Path);
-        }
+        using var directory1 = DisposableDirectory.Create();
+        using var directory2 = DisposableDirectory.Create();
+
+        Assert.NotEqual(directory1.Path, directory2.Path);
     }
 
     [Fact]
