@@ -1,7 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using DisposableFileSystem;
 using Xunit;
+using static DisposableFileSystem.DisposableDirectory;
 
 namespace DisposableFileSystemTest;
 
@@ -10,8 +10,8 @@ public class DisposableDirectoryTest
     [Fact]
     public void disposable_directories_have_random_names()
     {
-        using var directory1 = DisposableDirectory.Create();
-        using var directory2 = DisposableDirectory.Create();
+        using var directory1 = Create();
+        using var directory2 = Create();
 
         Assert.NotEqual(directory1.Path, directory2.Path);
     }
@@ -19,7 +19,7 @@ public class DisposableDirectoryTest
     [Fact]
     public void directories_are_created_in_the_system_temp_directory()
     {
-        using var disposableDirectory = DisposableDirectory.Create();
+        using var disposableDirectory = Create();
         var directory = disposableDirectory.Path;
 
         var parent = Path.GetDirectoryName(directory);
@@ -31,7 +31,7 @@ public class DisposableDirectoryTest
     public void when_disposed_of_the_directory_and_its_content_are_deleted()
     {
         string filePath;
-        using (var disposableDirectory = DisposableDirectory.Create())
+        using (var disposableDirectory = Create())
         {
             filePath = Path.Combine(disposableDirectory.Path, "some-file.txt");
             File.WriteAllText(filePath, "some text");
@@ -45,7 +45,7 @@ public class DisposableDirectoryTest
     [Fact]
     public void allows_the_creation_of_subdirectories()
     {
-        using var disposableDirectory = DisposableDirectory.Create();
+        using var disposableDirectory = Create();
 
         var result = disposableDirectory.CreateDirectory("some_directory");
 
@@ -57,7 +57,7 @@ public class DisposableDirectoryTest
     [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
     public void allows_the_creation_of_nested_subdirectories_providing_a_collection_of_directory_names()
     {
-        using var disposableDirectory = DisposableDirectory.Create();
+        using var disposableDirectory = Create();
 
         var result = disposableDirectory.CreateDirectory("dir1", "dir2", "dir3");
 
@@ -76,7 +76,7 @@ public class DisposableDirectoryTest
     [Fact]
     public void allows_the_creation_of_files()
     {
-        using var disposableDirectory = DisposableDirectory.Create();
+        using var disposableDirectory = Create();
 
         var fileName = disposableDirectory.RandomFileName();
 
@@ -89,7 +89,7 @@ public class DisposableDirectoryTest
     public void created_files_are_deleted_during_disposal()
     {
         string fileName;
-        using (var disposableDirectory = DisposableDirectory.Create())
+        using (var disposableDirectory = Create())
         {
             fileName = disposableDirectory.RandomFileName();
             File.WriteAllText(fileName, "some text");
@@ -103,7 +103,7 @@ public class DisposableDirectoryTest
     [Fact]
     public void file_names_are_random()
     {
-        using var disposableDirectory = DisposableDirectory.Create();
+        using var disposableDirectory = Create();
 
         var fileName1 = disposableDirectory.RandomFileName();
         var fileName2 = disposableDirectory.RandomFileName();
@@ -114,10 +114,26 @@ public class DisposableDirectoryTest
     [Fact]
     public void calculates_paths_from_root()
     {
-        using var disposableDirectory = DisposableDirectory.Create();
+        using var disposableDirectory = Create();
 
         var path = disposableDirectory.Combine("one", "two", "three", "some-file.txt");
 
         Assert.Equal(Path.Combine(disposableDirectory.Path, "one", "two", "three", "some-file.txt"), path);
+    }
+
+    [Fact]
+    void functional_syntax()
+    {
+        var fileName = "";
+
+        InADisposable(directory =>
+        {
+            fileName = directory.RandomFileName();
+            File.WriteAllText(fileName, "some content");
+
+            Assert.True(File.Exists(fileName));
+        });
+
+        Assert.False(File.Exists(fileName));
     }
 }

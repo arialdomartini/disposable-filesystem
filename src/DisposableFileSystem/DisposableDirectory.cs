@@ -39,5 +39,13 @@ namespace DisposableFileSystem
             System.IO.Path.Combine(
                 Path,
                 System.IO.Path.GetRandomFileName());
+
+        public static void InADisposable(Action<DisposableDirectory> action)
+        {
+            using (var disposableDirectory = Create())
+            {
+                action(disposableDirectory);
+            }
+        }
     }
 }
