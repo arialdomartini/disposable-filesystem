@@ -29,18 +29,19 @@ public class DisposableDirectoryTest
     }
 
     [Fact]
-    public void when_disposed_of_the_directory_and_its_content_are_deleted()
+    public void temporary_files_are_deleted_after_use()
     {
-        string filePath;
-        using (var disposableDirectory = Create())
+        string tempFile;
+        using (var directory = Create())
         {
-            filePath = Path.Combine(disposableDirectory.Path, "some-file.txt");
-            File.WriteAllText(filePath, "some text");
+            tempFile = directory
+                .RandomFileName()
+                .WithSomeContent();
 
-            Assert.True(File.Exists(filePath));
+            Assert.True(tempFile.Exists());
         }
 
-        Assert.False(File.Exists(filePath));
+        Assert.False(tempFile.Exists());
     }
 
     [Fact]
@@ -147,4 +148,13 @@ internal static class FileSystemHelpers
         container
             .InnerDirectories()
             .Contains(disposableDirectory.Path);
+
+    internal static string WithSomeContent(this string filePath)
+    {
+        File.WriteAllText(filePath, "some text");
+        return filePath;
+    }
+
+    internal static bool Exists(this string tempFile) =>
+        File.Exists(tempFile);
 }
