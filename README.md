@@ -31,12 +31,11 @@ var directory = DisposableDirectory.Create();
 Since the directory and all its content can be recursively deleted invoking `Dispose()`, a common pattern is the use in combination of a `using` statement:
 
 ```csharp
-using(var directory = DisposableDirectory.Create())
-{
-    var fullPath = directory.Path;
+using var directory = DisposableDirectory.Create();
+
+var fullPath = directory.Path;
     
-    // operate with the disposable directory
-}
+// operate with the disposable directory
 ```
 
 The `Path` property returns the full path of the disposable directory.
