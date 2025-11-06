@@ -156,13 +156,8 @@ dotnet build
 Run:
 
 ```bash
-dotnet test DisposableFileSystemTest/DisposableFileSystemTest.csproj
+dotnet test
 ```
-
-It should be possible to run tests with a simpler `dotnet test`, but I
-run in the issue ['dotnet test' in solution folder fails when non-test
-projects are in the solution
-#1129](http://wiki.c2.com/?DisposableFileSystem)
 
 ### NuGet package
 Create the NuGet package with:
