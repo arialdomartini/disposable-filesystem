@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using DisposableFileSystem;
-using FluentAssertions;
 using Xunit;
 
 namespace DisposableFileSystemTest;
@@ -22,7 +21,7 @@ public class DisposableDirectoryTest : IDisposable
         using (var directory1 = DisposableDirectory.Create())
         using (var directory2 = DisposableDirectory.Create())
         {
-            directory1.Path.Should().NotBe(directory2.Path);
+            Assert.NotEqual(directory1.Path, directory2.Path);
         }
     }
 
@@ -33,7 +32,7 @@ public class DisposableDirectoryTest : IDisposable
 
         var parent = Path.GetDirectoryName(directory);
 
-        parent.Should().Be(Path.GetDirectoryName(Path.GetTempPath()));
+        Assert.Equal(Path.GetDirectoryName(Path.GetTempPath()), parent);
     }
 
     [Fact]
@@ -44,10 +43,11 @@ public class DisposableDirectoryTest : IDisposable
         {
             filePath = Path.Combine(sut.Path, "some-file.txt");
             File.WriteAllText(filePath, "some text");
-            File.Exists(filePath).Should().Be(true);
+
+            Assert.True(File.Exists(filePath));
         }
 
-        File.Exists(filePath).Should().Be(false);
+        Assert.False(File.Exists(filePath));
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public class DisposableDirectoryTest : IDisposable
         var result = _sut.CreateDirectory("some_directory");
 
         var parentDirectory = Directory.GetParent(result).FullName;
-        parentDirectory.Should().Be(_sut.Path);
+        Assert.Equal(parentDirectory, _sut.Path);
     }
 
     [Fact]
@@ -70,10 +70,11 @@ public class DisposableDirectoryTest : IDisposable
         var dir1 = dir2.Parent;
         var root = dir1.Parent;
 
-        root.FullName.Should().Be(_sut.Path);
-        dir1.Name.Should().Be("dir1");
-        dir2.Name.Should().Be("dir2");
-        dir3.Name.Should().Be("dir3");
+
+        Assert.Equal(_sut.Path, root.FullName);
+        Assert.Equal("dir1", dir1.Name);
+        Assert.Equal("dir2", dir2.Name);
+        Assert.Equal("dir3", dir3.Name);
     }
 
     [Fact]
@@ -83,7 +84,7 @@ public class DisposableDirectoryTest : IDisposable
 
         File.WriteAllText(fileName, "some text");
 
-        File.ReadAllText(fileName).Should().Be("some text");
+        Assert.Equal("some text", File.ReadAllText(fileName));
     }
 
     [Fact]
@@ -95,10 +96,10 @@ public class DisposableDirectoryTest : IDisposable
             fileName = directory.RandomFileName();
             File.WriteAllText(fileName, "some text");
 
-            File.Exists(fileName).Should().Be(true);
+            Assert.True(File.Exists(fileName));
         }
 
-        File.Exists(fileName).Should().Be(false);
+        Assert.False(File.Exists(fileName));
     }
 
     [Fact]
@@ -107,7 +108,7 @@ public class DisposableDirectoryTest : IDisposable
         var fileName1 = _sut.RandomFileName();
         var fileName2 = _sut.RandomFileName();
 
-        fileName1.Should().NotBe(fileName2);
+        Assert.NotEqual(fileName1, fileName2);
     }
 
     [Fact]
@@ -115,6 +116,6 @@ public class DisposableDirectoryTest : IDisposable
     {
         var path = _sut.Combine("one", "two", "three", "some-file.txt");
 
-        path.Should().Be(Path.Combine(_sut.Path, "one", "two", "three", "some-file.txt"));
+        Assert.Equal(Path.Combine(_sut.Path, "one", "two", "three", "some-file.txt"), path);
     }
 }
