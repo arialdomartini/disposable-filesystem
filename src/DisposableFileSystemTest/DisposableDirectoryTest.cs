@@ -9,12 +9,7 @@ namespace DisposableFileSystemTest;
 
 public class DisposableDirectoryTest : IDisposable
 {
-    private readonly DisposableDirectory _sut;
-
-    public DisposableDirectoryTest()
-    {
-        _sut = DisposableDirectory.Create();
-    }
+    private readonly DisposableDirectory _sut = DisposableDirectory.Create();
 
     public void Dispose()
     {
