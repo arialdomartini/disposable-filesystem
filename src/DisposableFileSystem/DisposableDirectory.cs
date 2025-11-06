@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
+using static System.IO.Path;
 
 namespace DisposableFileSystem
 {
@@ -18,8 +19,8 @@ namespace DisposableFileSystem
 
         private static string RandomPath() =>
             System.IO.Path.Combine(
-                System.IO.Path.GetTempPath(),
-                System.IO.Path.GetRandomFileName());
+                GetTempPath(),
+                GetRandomFileName());
 
         void IDisposable.Dispose()
         {
@@ -38,7 +39,7 @@ namespace DisposableFileSystem
         public string RandomFileName() =>
             System.IO.Path.Combine(
                 Path,
-                System.IO.Path.GetRandomFileName());
+                GetRandomFileName());
 
         public static void InADisposable(Action<DisposableDirectory> action)
         {
