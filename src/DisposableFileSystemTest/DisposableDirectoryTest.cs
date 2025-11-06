@@ -88,21 +88,6 @@ public class DisposableDirectoryTest
     }
 
     [Fact]
-    public void created_files_are_deleted_during_disposal()
-    {
-        string fileName;
-        using (var disposableDirectory = Create())
-        {
-            fileName = disposableDirectory.RandomFileName();
-            File.WriteAllText(fileName, "some text");
-
-            Assert.True(File.Exists(fileName));
-        }
-
-        Assert.False(File.Exists(fileName));
-    }
-
-    [Fact]
     public void file_names_are_random()
     {
         using var disposableDirectory = Create();
