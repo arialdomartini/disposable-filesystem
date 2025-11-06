@@ -14,13 +14,17 @@ namespace DisposableFileSystem
             Path = path;
         }
 
-        public static DisposableDirectory Create() =>
-            new DisposableDirectory(RandomPath().EnsureExists());
+        public static DisposableDirectory Create()
+        {
+            var currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
+            var randomPath = System.IO.Path.Combine(currentDirectory, RandomPath());
+
+            return new DisposableDirectory(randomPath.EnsureExists());
+        }
 
         private static string RandomPath() =>
-            System.IO.Path.Combine(
-                GetTempPath(),
-                GetRandomFileName());
+                GetRandomFileName();
 
         void IDisposable.Dispose()
         {

@@ -24,9 +24,8 @@ in the Package Manager console.
 ## Usage
 ### Create a temporary, disposable directory
 
-The following creates a temporary directory, located in [current
-user's temporary
-folder](https://docs.microsoft.com/en-us/dotnet/api/system.io.path.gettemppath?view=netframework-4.7.2):
+The following creates a temporary directory, located in the current
+[Assembly's base directory](https://learn.microsoft.com/en-us/dotnet/api/system.appdomain.basedirectory?view=net-9.0):
 
 ```csharp
 var directory = DisposableDirectory.Create();

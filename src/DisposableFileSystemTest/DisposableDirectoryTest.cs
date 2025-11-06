@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -19,13 +20,13 @@ public class DisposableDirectoryTest
     }
 
     [Fact]
-    public void directories_are_created_in_the_system_temp_directory()
+    public void directories_are_created_in_the_working_directory()
     {
         using var disposableDirectory = Create();
 
-        var systemTempDirectory = Path.GetTempPath();
+        var runtimePath = Path.GetFullPath(".");
 
-        Assert.True(systemTempDirectory.Contains(disposableDirectory));
+        Assert.True(runtimePath.Contains(disposableDirectory));
     }
 
     [Fact]
@@ -127,12 +128,16 @@ public class DisposableDirectoryTest
 
 internal static class FileSystemHelpers
 {
-    private static string[] InnerDirectories(this string path) => Directory.GetDirectories(path);
+    private static string[] InnerDirectories(this string path) =>
+        Directory.GetDirectories(path);
 
-    internal static bool Contains(this string container, DisposableDirectory disposableDirectory) =>
-        container
-            .InnerDirectories()
+    internal static bool Contains(this string container, DisposableDirectory disposableDirectory)
+    {
+        var innerDirectories = container
+            .InnerDirectories();
+        return innerDirectories
             .Contains(disposableDirectory.Path);
+    }
 
     internal static string WithSomeContent(this string filePath)
     {
