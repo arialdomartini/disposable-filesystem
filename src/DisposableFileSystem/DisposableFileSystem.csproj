@@ -2,8 +2,8 @@
     
     <PropertyGroup>
         <PackageId>DisposableFileSystem</PackageId>
-        <Title>A library that ease the creation of temporary directory and files in test projects</Title>
-        <Version>2.1.0</Version>
+        <Title>Deletes test leftovers so you don't have to</Title>
+        <Version>2.2.0</Version>
         <Authors>Arialdo Martini</Authors>
         <PackageProjectUrl>https://github.com/arialdomartini/disposable-filesystem</PackageProjectUrl>
         <TargetFramework>netstandard2.0</TargetFramework>

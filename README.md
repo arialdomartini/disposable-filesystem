@@ -1,9 +1,14 @@
 Disposable FileSystem
 =====================
-DisposableFileSystem is a C# library that helps the creation of temporary files and directories in tests projects, ensuring that any content is cleaned up when the tests end.
+DisposableFileSystem is a C# library that deletes test leftovers so
+you don't have to. It helps in the creation of temporary files and
+directories in tests projects, ensuring that any content is cleaned up
+when the tests end.
 
 ## Installation
-The library is available as a [NuGet package](https://www.nuget.org/packages/DisposableFileSystem/), and it can be installed from the command line with:
+The library is available as a [NuGet
+package](https://www.nuget.org/packages/DisposableFileSystem/), and it
+can be installed from the command line with:
 
 ```bash
 dotnet add package DisposableFileSystem
@@ -19,27 +24,64 @@ in the Package Manager console.
 ## Usage
 ### Create a temporary, disposable directory
 
-The following creates a temporary directory, located in [current user's temporary folder](https://docs.microsoft.com/en-us/dotnet/api/system.io.path.gettemppath?view=netframework-4.7.2):
+The following creates a temporary directory, located in the current
+[Assembly's base directory](https://learn.microsoft.com/en-us/dotnet/api/system.appdomain.basedirectory?view=net-9.0):
 
 ```csharp
 var directory = DisposableDirectory.Create();
 ```
 
-Since the directory and all its content can be recursively deleted invoking `Dispose()`, a common pattern is the use in combination of a `using` statement:
+Since the directory and all its content can be recursively deleted
+invoking `Dispose()`, a common pattern is the use of `Create()` in
+combination of a `using` statement:
 
 ```csharp
-using(var directory = DisposableDirectory.Create())
-{
-    var fullPath = directory.Path;
+using var directory = DisposableDirectory.Create();
+
+var fullPath = directory.Path;
     
-    // operate with the disposable directory
-}
+// operate with the disposable directory
 ```
 
 The `Path` property returns the full path of the disposable directory.
 
+### Functional syntax
+A convenient alternative is to write your test as a lambda expression,
+like in:
+
+```csharp
+using static DisposableFileSystem.DisposableDirectory;
+
+public class YourTest
+{
+    [Fact]
+    void functional_syntax()
+    {
+        InADisposable(directory =>
+        {
+            // your test
+        });
+    }
+}
+```
+
+or even shortly as:
+
+```csharp
+[Fact]
+void functional_syntax2() => InADisposable(directory =>
+{
+    // your test
+});
+```
+
+Notice the use of `using static
+DisposableFileSystem.DisposableDirectory;` to shorten the syntax.
+
 ## Create subdirectories
-The method `CreateDirectory()` can be used to conveniently create a sub-directory inside the temporary root directory, without having to deal with `System.IO.Path.Combine`:
+The method `CreateDirectory()` can be used to conveniently create a
+sub-directory inside the temporary root directory, without having to
+deal with `System.IO.Path.Combine`:
 
 ```csharp
 using(var directory = DisposableDirectory.Create())
@@ -50,7 +92,8 @@ using(var directory = DisposableDirectory.Create())
 
 The sub-directory and its content will be deleted on `Dispose()`.
 
-It's possible to create nested sub-directories by providing a list of their names. <br />
+It's possible to create nested sub-directories by providing a list of
+their names.  
 For example, to create the following structure:
 
 ```bash
@@ -69,12 +112,14 @@ using(var directory = DisposableDirectory.Create())
 }
 ```
 
-In this case as well, all the directories and their content will be recursively deleted on `Dispose()`.
+In this case as well, all the directories and their content will be
+recursively deleted on `Dispose()`.
 
 
 
 ## Create temporary files
-The method `RandomFileName()` generates a random name for a file contained in the root temporary directory:
+The method `RandomFileName()` generates a random name for a file
+contained in the root temporary directory:
 
 ```csharp
 using (var directory = DisposableDirectory.Create())
@@ -110,10 +155,8 @@ dotnet build
 Run:
 
 ```bash
-dotnet test DisposableFileSystemTest/DisposableFileSystemTest.csproj
+dotnet test
 ```
-
-It should be possible to run tests with a simpler `dotnet test`, but I run in the issue ['dotnet test' in solution folder fails when non-test projects are in the solution #1129](http://wiki.c2.com/?DisposableFileSystem)
 
 ### NuGet package
 Create the NuGet package with:
